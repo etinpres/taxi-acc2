@@ -32,9 +32,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="manifest" href="/taxi-acc2/manifest.json" />
       </head>
-      <body className={`${geistSans.variable} font-sans antialiased bg-gray-50 text-gray-900`}>
+      <body className={`${geistSans.variable} font-sans antialiased bg-gray-50 text-gray-900 h-dvh flex flex-col overflow-hidden`}>
         <AppDataProvider>
-          <main className="max-w-lg mx-auto min-h-screen pb-20 md:pb-4">{children}</main>
+          <main className="flex-1 overflow-y-auto">
+            <div className="max-w-lg mx-auto pb-4">{children}</div>
+          </main>
           <BottomNav />
         </AppDataProvider>
       </body>
