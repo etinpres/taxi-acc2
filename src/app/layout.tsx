@@ -12,17 +12,26 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: '고도비만 택시장부',
   description: '고도비만 택시장부 - 택시기사 수입지출 장부 웹앱',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: '고도비만 택시장부',
+  },
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  themeColor: '#2563EB',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+      <head>
+        <link rel="manifest" href="/taxi-acc2/manifest.json" />
+      </head>
       <body className={`${geistSans.variable} font-sans antialiased bg-gray-50 text-gray-900`}>
         <AppDataProvider>
           <main className="max-w-lg mx-auto min-h-screen pb-20 md:pb-4">{children}</main>
