@@ -1,38 +1,39 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppData } from '@/hooks/use-app-data';
-import { useDailySummary } from '@/hooks/use-daily-summary';
-import { getToday, getCurrentMonth, formatDate } from '@/lib/date-utils';
-import { getGoalProgress, filterIncomesByDate, filterExpensesByDate, formatCurrency } from '@/lib/data-utils';
-import { StatCard } from '@/components/common/stat-card';
+import { useMonthlySummary } from '@/hooks/use-monthly-summary';
+import { getToday, getCurrentMonth, formatMonth } from '@/lib/date-utils';
+import { getGoalProgress, formatCurrency } from '@/lib/data-utils';
 import { Modal } from '@/components/common/modal';
 import { GoalProgressCard } from '@/components/goal/goal-progress';
 import { MonthlyGoalForm } from '@/components/goal/monthly-goal-form';
 import { IncomeForm } from '@/components/transactions/income-form';
 import { ExpenseForm } from '@/components/transactions/expense-form';
-import { TransactionList } from '@/components/transactions/transaction-list';
+import { CalendarGrid } from '@/components/calendar/calendar-grid';
 import { Plus } from 'lucide-react';
 
 export default function HomePage() {
   const today = getToday();
   const currentMonth = getCurrentMonth();
-  const { data, dispatch } = useAppData();
-  const summary = useDailySummary(today);
+  const { data } = useAppData();
+  const summary = useMonthlySummary(currentMonth);
   const goalProgress = getGoalProgress(data, currentMonth);
+  const router = useRouter();
 
-  const [modal, setModal] = useState<'income' | 'expense' | 'goal' | 'editIncome' | 'editExpense' | null>(null);
-  const [editId, setEditId] = useState<string | null>(null);
+  const [modal, setModal] = useState<'income' | 'expense' | 'goal' | null>(null);
 
-  const todayIncomes = filterIncomesByDate(data.incomes, today);
-  const todayExpenses = filterExpensesByDate(data.expenses, today);
+  const handleSelectDate = (date: string) => {
+    router.push(`/daily?date=${date}`);
+  };
 
   return (
     <div className="space-y-4">
       <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 px-4 pt-6 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-white">고도비만 택시장부</h1>
-          <span className="text-xs text-blue-200 bg-white/10 px-2.5 py-1 rounded-full">{formatDate(today)}</span>
+          <span className="text-xs text-blue-200 bg-white/10 px-2.5 py-1 rounded-full">{formatMonth(currentMonth)}</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3 text-center">
@@ -69,16 +70,26 @@ export default function HomePage() {
         </button>
       </div>
 
+      <div className="bg-white rounded-xl mx-4 p-3 shadow-sm">
+        <CalendarGrid month={currentMonth} data={data} onSelectDate={handleSelectDate} />
+      </div>
+
       <div className="bg-white rounded-xl mx-4 p-4 shadow-sm">
-        <h2 className="text-sm font-semibold text-gray-700 mb-2">오늘의 내역</h2>
-        <TransactionList
-          incomes={todayIncomes}
-          expenses={todayExpenses}
-          onEditIncome={(id) => { setEditId(id); setModal('editIncome'); }}
-          onDeleteIncome={(id) => dispatch({ type: 'DELETE_INCOME', payload: id })}
-          onEditExpense={(id) => { setEditId(id); setModal('editExpense'); }}
-          onDeleteExpense={(id) => dispatch({ type: 'DELETE_EXPENSE', payload: id })}
-        />
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">근무 현황</h2>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="text-center p-2 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500">근무일</p>
+            <p className="text-lg font-bold text-gray-900">{summary.workingDays}일</p>
+          </div>
+          <div className="text-center p-2 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500">휴무일</p>
+            <p className="text-lg font-bold text-blue-500">{summary.daysOffCount}일</p>
+          </div>
+          <div className="text-center p-2 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500">일평균 수입</p>
+            <p className="text-lg font-bold text-gray-900">{formatCurrency(summary.avgIncomePerWorkDay)}</p>
+          </div>
+        </div>
       </div>
 
       <Modal isOpen={modal === 'income'} onClose={() => setModal(null)} title="수입 추가">
@@ -89,12 +100,6 @@ export default function HomePage() {
       </Modal>
       <Modal isOpen={modal === 'goal'} onClose={() => setModal(null)} title="월 목표 설정">
         <MonthlyGoalForm month={currentMonth} onClose={() => setModal(null)} />
-      </Modal>
-      <Modal isOpen={modal === 'editIncome'} onClose={() => { setModal(null); setEditId(null); }} title="수입 수정">
-        {editId && <IncomeForm editId={editId} onSuccess={() => { setModal(null); setEditId(null); }} />}
-      </Modal>
-      <Modal isOpen={modal === 'editExpense'} onClose={() => { setModal(null); setEditId(null); }} title="지출 수정">
-        {editId && <ExpenseForm editId={editId} onSuccess={() => { setModal(null); setEditId(null); }} />}
       </Modal>
     </div>
   );
