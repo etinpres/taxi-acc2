@@ -13,9 +13,9 @@ interface GoalProgressProps {
 export function GoalProgressCard({ goalProgress, onSetGoal }: GoalProgressProps) {
   if (!goalProgress) {
     return (
-      <button onClick={onSetGoal} className="w-full bg-white rounded-xl p-4 border border-dashed border-gray-300 text-center hover:border-blue-400 hover:bg-blue-50/30 transition-colors">
-        <Target size={24} className="mx-auto text-gray-400 mb-1" />
-        <p className="text-sm text-gray-500">이번 달 목표를 설정해보세요</p>
+      <button onClick={onSetGoal} className="w-full bg-white rounded-xl p-3 border border-dashed border-gray-300 text-center hover:border-blue-400 hover:bg-blue-50/30 transition-colors">
+        <Target size={18} className="mx-auto text-gray-400 mb-0.5" />
+        <p className="text-xs text-gray-500">이번 달 목표를 설정해보세요</p>
       </button>
     );
   }
@@ -23,18 +23,18 @@ export function GoalProgressCard({ goalProgress, onSetGoal }: GoalProgressProps)
   const { targetAmount, currentAmount, progressPercent, remainingAmount, remainingDays, dailyTarget, isAchieved } = goalProgress;
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-gray-700">이번 달 목표 (순이익)</span>
+    <div className="bg-white rounded-xl p-3 shadow-sm">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-xs font-medium text-gray-700">이번 달 목표 (순이익)</span>
         <button onClick={onSetGoal} className="text-xs text-blue-600 hover:underline">변경</button>
       </div>
-      <div className="flex items-end justify-between mb-2">
-        <span className="text-2xl font-bold text-gray-900">{progressPercent}%</span>
-        <span className="text-xs text-gray-500">
+      <div className="flex items-end justify-between mb-1">
+        <span className="text-lg font-bold text-gray-900">{progressPercent}%</span>
+        <span className="text-[11px] text-gray-500">
           {formatCurrency(currentAmount)} / {formatCurrency(targetAmount)}
         </span>
       </div>
-      <ProgressBar percent={progressPercent} className="mb-2" />
+      <ProgressBar percent={progressPercent} className="mb-1" />
       {isAchieved ? (
         <p className="text-sm text-green-600 font-semibold text-center">목표 달성!</p>
       ) : (
