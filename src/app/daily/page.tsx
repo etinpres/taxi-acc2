@@ -47,9 +47,10 @@ function DailyPageContent() {
   return (
     <SwipeableView viewKey={date} onPrev={handlePrev} onNext={handleNext} className="space-y-4 pt-2">
       <h1 className="text-lg font-bold px-4 pt-2">일별 기록</h1>
-      <DateNavigator date={date} onChange={setDate} mode="day" />
-
-      <div className="flex justify-center">
+      <div className="flex items-center gap-2 pr-4">
+        <div className="flex-1">
+          <DateNavigator date={date} onChange={setDate} mode="day" />
+        </div>
         <DayOffToggle date={date} />
       </div>
 
