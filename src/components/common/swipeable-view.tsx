@@ -29,8 +29,8 @@ export function SwipeableView({ children, viewKey, onPrev, onNext, className }: 
   const animClass = direction === 'left' ? 'animate-slide-from-right' : direction === 'right' ? 'animate-slide-from-left' : '';
 
   return (
-    <div ref={swipeRef} className={className} style={{ overflow: 'hidden' }}>
-      <div key={viewKey} className={animClass} onAnimationEnd={() => setDirection(null)}>
+    <div ref={swipeRef} style={{ overflow: 'hidden' }}>
+      <div key={viewKey} className={`${className ?? ''} ${animClass}`} onAnimationEnd={() => setDirection(null)}>
         {children}
       </div>
     </div>
