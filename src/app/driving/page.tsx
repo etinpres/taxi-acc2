@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useAppData } from '@/hooks/use-app-data';
 import { useMonthlySummary } from '@/hooks/use-monthly-summary';
-import { getToday } from '@/lib/date-utils';
+import { useSwipe } from '@/hooks/use-swipe';
+import { getToday, getPrevDay, getNextDay } from '@/lib/date-utils';
 import { DateNavigator } from '@/components/common/date-navigator';
 import { Modal } from '@/components/common/modal';
 import { DrivingForm } from '@/components/driving/driving-form';
@@ -19,8 +20,12 @@ export default function DrivingPage() {
 
   const todayLog = data.drivingLogs.find((d) => d.date === date);
 
+  const handleSwipeLeft = useCallback(() => setDate((d) => getNextDay(d)), []);
+  const handleSwipeRight = useCallback(() => setDate((d) => getPrevDay(d)), []);
+  const swipeRef = useSwipe<HTMLDivElement>({ onSwipeLeft: handleSwipeLeft, onSwipeRight: handleSwipeRight });
+
   return (
-    <div className="space-y-4 pt-2">
+    <div ref={swipeRef} className="space-y-4 pt-2">
       <h1 className="text-lg font-bold px-4 pt-2">운행 기록</h1>
       <DateNavigator date={date} onChange={setDate} mode="day" />
 

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAppData } from '@/hooks/use-app-data';
 import { useDailySummary } from '@/hooks/use-daily-summary';
-import { getToday } from '@/lib/date-utils';
+import { useSwipe } from '@/hooks/use-swipe';
+import { getToday, getPrevDay, getNextDay } from '@/lib/date-utils';
 import { filterIncomesByDate, filterExpensesByDate } from '@/lib/data-utils';
 import { StatCard } from '@/components/common/stat-card';
 import { DateNavigator } from '@/components/common/date-navigator';
@@ -40,8 +41,12 @@ function DailyPageContent() {
   const incomes = filterIncomesByDate(data.incomes, date);
   const expenses = filterExpensesByDate(data.expenses, date);
 
+  const handleSwipeLeft = useCallback(() => setDate((d) => getNextDay(d)), []);
+  const handleSwipeRight = useCallback(() => setDate((d) => getPrevDay(d)), []);
+  const swipeRef = useSwipe<HTMLDivElement>({ onSwipeLeft: handleSwipeLeft, onSwipeRight: handleSwipeRight });
+
   return (
-    <div className="space-y-4 pt-2">
+    <div ref={swipeRef} className="space-y-4 pt-2">
       <h1 className="text-lg font-bold px-4 pt-2">일별 기록</h1>
       <DateNavigator date={date} onChange={setDate} mode="day" />
 

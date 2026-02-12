@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { getCurrentMonth, getPrevMonth } from '@/lib/date-utils';
+import { getCurrentMonth, getPrevMonth, getNextMonth } from '@/lib/date-utils';
+import { useSwipe } from '@/hooks/use-swipe';
 import { formatCurrency } from '@/lib/data-utils';
 import { useMonthlySummary } from '@/hooks/use-monthly-summary';
 import { StatCard } from '@/components/common/stat-card';
@@ -21,8 +22,12 @@ export default function MonthlyPage() {
   const summary = useMonthlySummary(month);
   const prevSummary = useMonthlySummary(getPrevMonth(month));
 
+  const handleSwipeLeft = useCallback(() => setMonth((m) => getNextMonth(m)), []);
+  const handleSwipeRight = useCallback(() => setMonth((m) => getPrevMonth(m)), []);
+  const swipeRef = useSwipe<HTMLDivElement>({ onSwipeLeft: handleSwipeLeft, onSwipeRight: handleSwipeRight });
+
   return (
-    <div className="space-y-4 pt-2">
+    <div ref={swipeRef} className="space-y-4 pt-2">
       <h1 className="text-lg font-bold px-4 pt-2">월별 통계</h1>
 
       <DateNavigator date={month} onChange={setMonth} mode="month" />
