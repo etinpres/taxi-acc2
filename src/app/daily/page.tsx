@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAppData } from '@/hooks/use-app-data';
 import { useDailySummary } from '@/hooks/use-daily-summary';
-import { useSwipe } from '@/hooks/use-swipe';
 import { getToday, getPrevDay, getNextDay } from '@/lib/date-utils';
 import { filterIncomesByDate, filterExpensesByDate } from '@/lib/data-utils';
 import { StatCard } from '@/components/common/stat-card';
 import { DateNavigator } from '@/components/common/date-navigator';
+import { SwipeableView } from '@/components/common/swipeable-view';
 import { Modal } from '@/components/common/modal';
 import { DayOffToggle } from '@/components/dayoff/dayoff-toggle';
 import { IncomeForm } from '@/components/transactions/income-form';
@@ -41,12 +41,11 @@ function DailyPageContent() {
   const incomes = filterIncomesByDate(data.incomes, date);
   const expenses = filterExpensesByDate(data.expenses, date);
 
-  const handleSwipeLeft = useCallback(() => setDate((d) => getNextDay(d)), []);
-  const handleSwipeRight = useCallback(() => setDate((d) => getPrevDay(d)), []);
-  const swipeRef = useSwipe<HTMLDivElement>({ onSwipeLeft: handleSwipeLeft, onSwipeRight: handleSwipeRight });
+  const handlePrev = useCallback(() => setDate((d) => getPrevDay(d)), []);
+  const handleNext = useCallback(() => setDate((d) => getNextDay(d)), []);
 
   return (
-    <div ref={swipeRef} className="space-y-4 pt-2">
+    <SwipeableView viewKey={date} onPrev={handlePrev} onNext={handleNext} className="space-y-4 pt-2">
       <h1 className="text-lg font-bold px-4 pt-2">일별 기록</h1>
       <DateNavigator date={date} onChange={setDate} mode="day" />
 
@@ -138,6 +137,6 @@ function DailyPageContent() {
       <Modal isOpen={modal === 'editExpense'} onClose={() => { setModal(null); setEditId(null); }} title="지출 수정">
         {editId && <ExpenseForm editId={editId} onSuccess={() => { setModal(null); setEditId(null); }} />}
       </Modal>
-    </div>
+    </SwipeableView>
   );
 }

@@ -24,6 +24,25 @@
   animation: fade-in 0.2s ease-out;
 }
 
+/* Swipe transition animations */
+@keyframes slide-from-right {
+  from { transform: translateX(30%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-from-left {
+  from { transform: translateX(-30%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide-from-right {
+  animation: slide-from-right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-slide-from-left {
+  animation: slide-from-left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Button press effect */
 .btn-press {
   transition: transform 0.1s ease, box-shadow 0.1s ease;

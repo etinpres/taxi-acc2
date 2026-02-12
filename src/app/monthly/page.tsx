@@ -3,11 +3,11 @@
 import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { getCurrentMonth, getPrevMonth, getNextMonth } from '@/lib/date-utils';
-import { useSwipe } from '@/hooks/use-swipe';
 import { formatCurrency } from '@/lib/data-utils';
 import { useMonthlySummary } from '@/hooks/use-monthly-summary';
 import { StatCard } from '@/components/common/stat-card';
 import { DateNavigator } from '@/components/common/date-navigator';
+import { SwipeableView } from '@/components/common/swipeable-view';
 import { Modal } from '@/components/common/modal';
 import { GoalProgressCard } from '@/components/goal/goal-progress';
 import { MonthlyGoalForm } from '@/components/goal/monthly-goal-form';
@@ -22,12 +22,11 @@ export default function MonthlyPage() {
   const summary = useMonthlySummary(month);
   const prevSummary = useMonthlySummary(getPrevMonth(month));
 
-  const handleSwipeLeft = useCallback(() => setMonth((m) => getNextMonth(m)), []);
-  const handleSwipeRight = useCallback(() => setMonth((m) => getPrevMonth(m)), []);
-  const swipeRef = useSwipe<HTMLDivElement>({ onSwipeLeft: handleSwipeLeft, onSwipeRight: handleSwipeRight });
+  const handlePrev = useCallback(() => setMonth((m) => getPrevMonth(m)), []);
+  const handleNext = useCallback(() => setMonth((m) => getNextMonth(m)), []);
 
   return (
-    <div ref={swipeRef} className="space-y-4 pt-2">
+    <SwipeableView viewKey={month} onPrev={handlePrev} onNext={handleNext} className="space-y-4 pt-2">
       <h1 className="text-lg font-bold px-4 pt-2">월별 통계</h1>
 
       <DateNavigator date={month} onChange={setMonth} mode="month" />
@@ -79,6 +78,6 @@ export default function MonthlyPage() {
       <Modal isOpen={goalModal} onClose={() => setGoalModal(false)} title="월 목표 설정">
         <MonthlyGoalForm month={month} onClose={() => setGoalModal(false)} />
       </Modal>
-    </div>
+    </SwipeableView>
   );
 }
