@@ -53,14 +53,14 @@ export function ExpenseForm({ defaultDate, onSuccess, editId }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="grid grid-cols-5 gap-3">
-        <div className="col-span-3">
+      <div className="grid grid-cols-[1fr_auto] gap-3 overflow-hidden">
+        <div className="min-w-0">
           <label className="block text-sm font-medium text-gray-700 mb-1">날짜</label>
-          <input type="date" {...register('date', { required: true })} max={getToday()} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
+          <input type="date" {...register('date', { required: true })} max={getToday()} className="w-full min-w-0 border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
         </div>
-        <div className="col-span-2">
+        <div className="w-28">
           <label className="block text-sm font-medium text-gray-700 mb-1">시간</label>
-          <input type="time" {...register('time', { required: true })} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
+          <input type="time" {...register('time', { required: true })} className="w-full min-w-0 border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
         </div>
       </div>
       <div>
