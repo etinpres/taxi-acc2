@@ -67,6 +67,15 @@ function DailyPageContent() {
         <StatCard label="순이익" amount={summary.netProfit} variant="profit" />
       </div>
 
+      <div className="grid grid-cols-2 gap-2 px-4">
+        <button onClick={() => setModal('income')} className="flex items-center justify-center gap-1.5 bg-blue-600 text-white rounded-xl py-3 text-sm font-semibold hover:bg-blue-700">
+          <Plus size={16} /> 수입 추가
+        </button>
+        <button onClick={() => setModal('expense')} className="flex items-center justify-center gap-1.5 bg-red-500 text-white rounded-xl py-3 text-sm font-semibold hover:bg-red-600">
+          <Plus size={16} /> 지출 추가
+        </button>
+      </div>
+
       <div className="bg-white rounded-xl mx-4 p-4 shadow-sm">
         <h2 className="text-sm font-semibold text-gray-700 mb-1">수입 ({incomes.length}건)</h2>
         {incomes.length === 0 ? (
@@ -117,15 +126,6 @@ function DailyPageContent() {
             ))}
           </div>
         )}
-      </div>
-
-      <div className="grid grid-cols-2 gap-2 px-4">
-        <button onClick={() => setModal('income')} className="flex items-center justify-center gap-1.5 bg-blue-600 text-white rounded-xl py-3 text-sm font-semibold hover:bg-blue-700">
-          <Plus size={16} /> 수입 추가
-        </button>
-        <button onClick={() => setModal('expense')} className="flex items-center justify-center gap-1.5 bg-red-500 text-white rounded-xl py-3 text-sm font-semibold hover:bg-red-600">
-          <Plus size={16} /> 지출 추가
-        </button>
       </div>
 
       <Modal isOpen={modal === 'income'} onClose={() => setModal(null)} title="수입 추가">
