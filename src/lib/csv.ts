@@ -7,16 +7,16 @@ export function exportToCsv(data: AppData): void {
   const lines: string[] = [];
 
   lines.push('[수입]');
-  lines.push('id,date,amount,paymentMethod,memo,createdAt,updatedAt');
+  lines.push('id,date,time,amount,paymentMethod,memo,createdAt,updatedAt');
   for (const i of data.incomes) {
-    lines.push(`${i.id},${i.date},${i.amount},${i.paymentMethod},"${(i.memo || '').replace(/"/g, '""')}",${i.createdAt},${i.updatedAt}`);
+    lines.push(`${i.id},${i.date},${i.time || ''},${i.amount},${i.paymentMethod},"${(i.memo || '').replace(/"/g, '""')}",${i.createdAt},${i.updatedAt}`);
   }
 
   lines.push('');
   lines.push('[지출]');
-  lines.push('id,date,amount,category,memo,createdAt,updatedAt');
+  lines.push('id,date,time,amount,category,memo,createdAt,updatedAt');
   for (const e of data.expenses) {
-    lines.push(`${e.id},${e.date},${e.amount},${e.category},"${(e.memo || '').replace(/"/g, '""')}",${e.createdAt},${e.updatedAt}`);
+    lines.push(`${e.id},${e.date},${e.time || ''},${e.amount},${e.category},"${(e.memo || '').replace(/"/g, '""')}",${e.createdAt},${e.updatedAt}`);
   }
 
   lines.push('');
@@ -73,17 +73,35 @@ export async function importFromCsv(file: File): Promise<AppData> {
     const cols = parseCsvLine(line);
 
     if (section === 'income' && cols.length >= 7) {
-      incomes.push({
-        id: cols[0], date: cols[1], amount: Number(cols[2]),
-        paymentMethod: cols[3] as 'cash' | 'card',
-        memo: cols[4], createdAt: cols[5], updatedAt: cols[6],
-      });
+      const hasTime = cols.length >= 8 && cols[2].includes(':');
+      if (hasTime) {
+        incomes.push({
+          id: cols[0], date: cols[1], time: cols[2], amount: Number(cols[3]),
+          paymentMethod: cols[4] as 'cash' | 'card',
+          memo: cols[5], createdAt: cols[6], updatedAt: cols[7],
+        });
+      } else {
+        incomes.push({
+          id: cols[0], date: cols[1], time: '', amount: Number(cols[2]),
+          paymentMethod: cols[3] as 'cash' | 'card',
+          memo: cols[4], createdAt: cols[5], updatedAt: cols[6],
+        });
+      }
     } else if (section === 'expense' && cols.length >= 7) {
-      expenses.push({
-        id: cols[0], date: cols[1], amount: Number(cols[2]),
-        category: cols[3] as Expense['category'],
-        memo: cols[4], createdAt: cols[5], updatedAt: cols[6],
-      });
+      const hasTime = cols.length >= 8 && cols[2].includes(':');
+      if (hasTime) {
+        expenses.push({
+          id: cols[0], date: cols[1], time: cols[2], amount: Number(cols[3]),
+          category: cols[4] as Expense['category'],
+          memo: cols[5], createdAt: cols[6], updatedAt: cols[7],
+        });
+      } else {
+        expenses.push({
+          id: cols[0], date: cols[1], time: '', amount: Number(cols[2]),
+          category: cols[3] as Expense['category'],
+          memo: cols[4], createdAt: cols[5], updatedAt: cols[6],
+        });
+      }
     } else if (section === 'driving' && cols.length >= 8) {
       drivingLogs.push({
         id: cols[0], date: cols[1], tripCount: Number(cols[2]),
@@ -102,7 +120,7 @@ export async function importFromCsv(file: File): Promise<AppData> {
 
   return {
     incomes, expenses, drivingLogs, monthlyGoals, daysOff,
-    version: '1.1.0',
+    version: '2.0.1',
     lastUpdated: new Date().toISOString(),
   };
 }

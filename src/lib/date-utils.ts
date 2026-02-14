@@ -65,3 +65,7 @@ export function getDaysInMonthFull(month: string): string[] {
 export function getDayLabel(date: string): string {
   return format(parse(date, 'yyyy-MM-dd', new Date()), 'd');
 }
+
+export function getNowTime(): string {
+  return format(new Date(), 'HH:mm');
+}

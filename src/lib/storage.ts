@@ -8,7 +8,7 @@ const INITIAL_DATA: AppData = {
   drivingLogs: [],
   monthlyGoals: [],
   daysOff: [],
-  version: '1.1.0',
+  version: '2.0.1',
   lastUpdated: new Date().toISOString(),
 };
 
@@ -23,6 +23,8 @@ export const storage = {
       return {
         ...INITIAL_DATA,
         ...data,
+        incomes: (data.incomes ?? []).map((i) => ({ ...i, time: i.time ?? '' })),
+        expenses: (data.expenses ?? []).map((e) => ({ ...e, time: e.time ?? '' })),
         monthlyGoals: data.monthlyGoals ?? [],
         daysOff: data.daysOff ?? [],
       };

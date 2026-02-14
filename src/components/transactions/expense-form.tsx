@@ -3,10 +3,11 @@
 import { useForm } from 'react-hook-form';
 import { useAppData } from '@/hooks/use-app-data';
 import { ExpenseCategory, EXPENSE_CATEGORY_LABELS } from '@/types';
-import { getToday } from '@/lib/date-utils';
+import { getToday, getNowTime } from '@/lib/date-utils';
 
 interface ExpenseFormValues {
   date: string;
+  time: string;
   amount: string;
   category: ExpenseCategory;
   memo: string;
@@ -25,6 +26,7 @@ export function ExpenseForm({ defaultDate, onSuccess, editId }: Props) {
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<ExpenseFormValues>({
     defaultValues: {
       date: existing?.date ?? defaultDate ?? getToday(),
+      time: existing?.time ?? getNowTime(),
       amount: existing ? existing.amount.toLocaleString('ko-KR') : '',
       category: existing?.category ?? 'fuel',
       memo: existing?.memo ?? '',
@@ -41,9 +43,9 @@ export function ExpenseForm({ defaultDate, onSuccess, editId }: Props) {
   const onSubmit = (values: ExpenseFormValues) => {
     const amount = parseAmount(values.amount);
     if (editId) {
-      dispatch({ type: 'UPDATE_EXPENSE', payload: { id: editId, data: { date: values.date, amount, category: values.category, memo: values.memo } } });
+      dispatch({ type: 'UPDATE_EXPENSE', payload: { id: editId, data: { date: values.date, time: values.time, amount, category: values.category, memo: values.memo } } });
     } else {
-      dispatch({ type: 'ADD_EXPENSE', payload: { date: values.date, amount, category: values.category, memo: values.memo } });
+      dispatch({ type: 'ADD_EXPENSE', payload: { date: values.date, time: values.time, amount, category: values.category, memo: values.memo } });
     }
     reset();
     onSuccess?.();
@@ -51,9 +53,15 @@ export function ExpenseForm({ defaultDate, onSuccess, editId }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">날짜</label>
-        <input type="date" {...register('date', { required: true })} max={getToday()} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">날짜</label>
+          <input type="date" {...register('date', { required: true })} max={getToday()} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
+        </div>
+        <div className="w-28">
+          <label className="block text-sm font-medium text-gray-700 mb-1">시간</label>
+          <input type="time" {...register('time', { required: true })} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
+        </div>
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">금액</label>

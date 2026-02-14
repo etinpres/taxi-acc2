@@ -11,11 +11,11 @@ import { getDaysInMonth, getCurrentMonth } from './date-utils';
 import { differenceInDays, parse, endOfMonth, startOfMonth, isAfter } from 'date-fns';
 
 export function filterIncomesByDate(incomes: Income[], date: string): Income[] {
-  return incomes.filter((i) => i.date === date).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return incomes.filter((i) => i.date === date).sort((a, b) => (b.time || '').localeCompare(a.time || ''));
 }
 
 export function filterExpensesByDate(expenses: Expense[], date: string): Expense[] {
-  return expenses.filter((e) => e.date === date).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return expenses.filter((e) => e.date === date).sort((a, b) => (b.time || '').localeCompare(a.time || ''));
 }
 
 export function filterIncomesByMonth(incomes: Income[], month: string): Income[] {

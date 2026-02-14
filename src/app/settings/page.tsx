@@ -90,7 +90,7 @@ export default function SettingsPage() {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-500">버전</span>
-            <span className="text-gray-900">2.0.0</span>
+            <span className="text-gray-900">2.0.1</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">저장된 데이터</span>

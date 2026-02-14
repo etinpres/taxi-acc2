@@ -19,6 +19,7 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
 export interface Income {
   id: string;
   date: string;
+  time: string;
   amount: number;
   paymentMethod: PaymentMethod;
   memo: string;
@@ -29,6 +30,7 @@ export interface Income {
 export interface Expense {
   id: string;
   date: string;
+  time: string;
   amount: number;
   category: ExpenseCategory;
   memo: string;
