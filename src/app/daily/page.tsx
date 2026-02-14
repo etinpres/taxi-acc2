@@ -76,10 +76,10 @@ function DailyPageContent() {
             {incomes.map((i) => (
               <div key={i.id} className="flex items-center justify-between py-2">
                 <div className="flex items-center gap-2">
-                  {i.time && <span className="text-xs text-gray-400 tabular-nums">{i.time}</span>}
                   <span className="text-xs px-1.5 py-0.5 rounded bg-blue-50 text-blue-600">
                     {i.paymentMethod === 'cash' ? '현금' : '카드'}
                   </span>
+                  {i.time && <span className="text-xs text-gray-400 tabular-nums">{i.time}</span>}
                   {i.memo && <span className="text-xs text-gray-400">{i.memo}</span>}
                 </div>
                 <div className="flex items-center gap-2">
@@ -102,10 +102,10 @@ function DailyPageContent() {
             {expenses.map((e) => (
               <div key={e.id} className="flex items-center justify-between py-2">
                 <div className="flex items-center gap-2">
-                  {e.time && <span className="text-xs text-gray-400 tabular-nums">{e.time}</span>}
                   <span className="text-xs px-1.5 py-0.5 rounded bg-red-50 text-red-500">
                     {{ fuel: '유류비', food: '식비', repair: '수리/정비', toll: '통행료', insurance: '보험료', other: '기타' }[e.category]}
                   </span>
+                  {e.time && <span className="text-xs text-gray-400 tabular-nums">{e.time}</span>}
                   {e.memo && <span className="text-xs text-gray-400">{e.memo}</span>}
                 </div>
                 <div className="flex items-center gap-2">

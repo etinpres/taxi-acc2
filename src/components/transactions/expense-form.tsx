@@ -53,15 +53,13 @@ export function ExpenseForm({ defaultDate, onSuccess, editId }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="flex gap-2">
-        <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-1">날짜</label>
-          <input type="date" {...register('date', { required: true })} max={getToday()} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
-        </div>
-        <div className="w-28">
-          <label className="block text-sm font-medium text-gray-700 mb-1">시간</label>
-          <input type="time" {...register('time', { required: true })} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">날짜</label>
+        <input type="date" {...register('date', { required: true })} max={getToday()} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">시간</label>
+        <input type="time" {...register('time', { required: true })} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm transition-colors" />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">금액</label>
