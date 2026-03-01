@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppData } from '@/hooks/use-app-data';
 import { useMonthlySummary } from '@/hooks/use-monthly-summary';
-import { getToday, getCurrentMonth, formatMonth } from '@/lib/date-utils';
+import { getToday, getCurrentMonth, formatMonth, getPrevMonth, getNextMonth } from '@/lib/date-utils';
 import { getGoalProgress, formatCurrency } from '@/lib/data-utils';
 import { Modal } from '@/components/common/modal';
 import { GoalProgressCard } from '@/components/goal/goal-progress';
@@ -12,15 +12,18 @@ import { MonthlyGoalForm } from '@/components/goal/monthly-goal-form';
 import { IncomeForm } from '@/components/transactions/income-form';
 import { ExpenseForm } from '@/components/transactions/expense-form';
 import { CalendarGrid } from '@/components/calendar/calendar-grid';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function HomePage() {
   const today = getToday();
-  const currentMonth = getCurrentMonth();
+  const [month, setMonth] = useState(getCurrentMonth());
   const { data } = useAppData();
-  const summary = useMonthlySummary(currentMonth);
-  const goalProgress = getGoalProgress(data, currentMonth);
+  const summary = useMonthlySummary(month);
+  const goalProgress = getGoalProgress(data, month);
   const router = useRouter();
+
+  const handlePrev = useCallback(() => setMonth((m) => getPrevMonth(m)), []);
+  const handleNext = useCallback(() => setMonth((m) => getNextMonth(m)), []);
 
   const [modal, setModal] = useState<'income' | 'expense' | 'goal' | null>(null);
 
@@ -33,7 +36,19 @@ export default function HomePage() {
       <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 px-4 pt-3 pb-4 rounded-b-2xl shadow-lg">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-lg font-bold text-white">고도비만 택시장부</h1>
-          <span className="text-xs text-blue-200 bg-white/10 px-2.5 py-0.5 rounded-full">{formatMonth(currentMonth)}</span>
+          <div className="flex items-center gap-1">
+            <button onClick={handlePrev} className="p-1 rounded-lg hover:bg-white/20 text-white">
+              <ChevronLeft size={16} />
+            </button>
+            <span className="text-xs text-blue-200 bg-white/10 px-2.5 py-0.5 rounded-full">{formatMonth(month)}</span>
+            <button
+              onClick={handleNext}
+              disabled={month >= getCurrentMonth()}
+              className="p-1 rounded-lg hover:bg-white/20 text-white disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-white/15 backdrop-blur-sm rounded-xl p-2 text-center">
@@ -71,7 +86,7 @@ export default function HomePage() {
       </div>
 
       <div className="bg-white rounded-xl mx-4 p-3 shadow-sm">
-        <CalendarGrid month={currentMonth} data={data} onSelectDate={handleSelectDate} />
+        <CalendarGrid month={month} data={data} onSelectDate={handleSelectDate} />
       </div>
 
       <div className="bg-white rounded-xl mx-4 p-4 shadow-sm">
@@ -99,7 +114,7 @@ export default function HomePage() {
         <ExpenseForm defaultDate={today} onSuccess={() => setModal(null)} />
       </Modal>
       <Modal isOpen={modal === 'goal'} onClose={() => setModal(null)} title="월 목표 설정">
-        <MonthlyGoalForm month={currentMonth} onClose={() => setModal(null)} />
+        <MonthlyGoalForm month={month} onClose={() => setModal(null)} />
       </Modal>
     </div>
   );
