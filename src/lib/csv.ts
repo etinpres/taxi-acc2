@@ -73,14 +73,15 @@ export async function importFromCsv(file: File): Promise<AppData> {
     const cols = parseCsvLine(line);
 
     if (section === 'income' && cols.length >= 7) {
-      const hasTime = cols.length >= 8 && cols[2].includes(':');
-      if (hasTime) {
+      if (cols.length >= 8) {
+        // 8컬럼: 시간 필드 포함 (비어있어도 컬럼 자체는 존재)
         incomes.push({
           id: cols[0], date: cols[1], time: cols[2], amount: Number(cols[3]),
           paymentMethod: cols[4] as 'cash' | 'card',
           memo: cols[5], createdAt: cols[6], updatedAt: cols[7],
         });
       } else {
+        // 7컬럼: 시간 필드 없는 구버전 CSV
         incomes.push({
           id: cols[0], date: cols[1], time: '', amount: Number(cols[2]),
           paymentMethod: cols[3] as 'cash' | 'card',
@@ -88,8 +89,7 @@ export async function importFromCsv(file: File): Promise<AppData> {
         });
       }
     } else if (section === 'expense' && cols.length >= 7) {
-      const hasTime = cols.length >= 8 && cols[2].includes(':');
-      if (hasTime) {
+      if (cols.length >= 8) {
         expenses.push({
           id: cols[0], date: cols[1], time: cols[2], amount: Number(cols[3]),
           category: cols[4] as Expense['category'],
