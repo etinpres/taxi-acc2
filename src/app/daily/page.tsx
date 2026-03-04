@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAppData } from '@/hooks/use-app-data';
 import { useDailySummary } from '@/hooks/use-daily-summary';
 import { getToday, getPrevDay, getNextDay } from '@/lib/date-utils';
 import { filterIncomesByDate, filterExpensesByDate } from '@/lib/data-utils';
+import { EXPENSE_CATEGORY_LABELS } from '@/types';
 import { StatCard } from '@/components/common/stat-card';
 import { DateNavigator } from '@/components/common/date-navigator';
 import { SwipeableView } from '@/components/common/swipeable-view';
@@ -13,7 +14,6 @@ import { Modal } from '@/components/common/modal';
 import { DayOffToggle } from '@/components/dayoff/dayoff-toggle';
 import { IncomeForm } from '@/components/transactions/income-form';
 import { ExpenseForm } from '@/components/transactions/expense-form';
-import { TransactionList } from '@/components/transactions/transaction-list';
 import { Plus } from 'lucide-react';
 
 export default function DailyPage() {
@@ -26,12 +26,15 @@ export default function DailyPage() {
 
 function DailyPageContent() {
   const searchParams = useSearchParams();
-  const [date, setDate] = useState(searchParams.get('date') || getToday());
+  const paramDate = searchParams.get('date');
+  const [date, setDate] = useState(paramDate || getToday());
+  const [lastParam, setLastParam] = useState(paramDate);
 
-  useEffect(() => {
-    const paramDate = searchParams.get('date');
+  if (paramDate !== lastParam) {
+    setLastParam(paramDate);
     if (paramDate) setDate(paramDate);
-  }, [searchParams]);
+  }
+
   const { data, dispatch } = useAppData();
   const summary = useDailySummary(date);
 
@@ -112,7 +115,7 @@ function DailyPageContent() {
               <div key={e.id} className="flex items-center justify-between py-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs px-1.5 py-0.5 rounded bg-red-50 text-red-500">
-                    {{ fuel: '유류비', food: '식비', repair: '수리/정비', toll: '통행료', insurance: '보험료', other: '기타' }[e.category]}
+                    {EXPENSE_CATEGORY_LABELS[e.category]}
                   </span>
                   {e.time && <span className="text-xs text-gray-400 tabular-nums">{e.time}</span>}
                   {e.memo && <span className="text-xs text-gray-400">{e.memo}</span>}

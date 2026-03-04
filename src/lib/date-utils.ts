@@ -32,9 +32,13 @@ export function getPrevDay(date: string): string {
   return format(subDays(parse(date, 'yyyy-MM-dd', new Date()), 1), 'yyyy-MM-dd');
 }
 
+export function getLastDayOfCurrentMonth(): string {
+  return format(endOfMonth(new Date()), 'yyyy-MM-dd');
+}
+
 export function getNextDay(date: string): string {
   const next = addDays(parse(date, 'yyyy-MM-dd', new Date()), 1);
-  if (isAfter(next, new Date())) return date;
+  if (isAfter(next, endOfMonth(new Date()))) return date;
   return format(next, 'yyyy-MM-dd');
 }
 

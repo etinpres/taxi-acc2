@@ -33,6 +33,7 @@ export function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => { const el = document.querySelector('main'); if (el) el.scrollTop = 0; }}
                 className={`flex flex-col items-center py-2.5 px-3 min-w-[56px] transition-all duration-200 ${
                   isActive ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
                 }`}

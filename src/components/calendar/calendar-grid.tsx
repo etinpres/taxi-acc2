@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { parse, getDay, startOfMonth, endOfMonth, eachDayOfInterval, format, isToday } from 'date-fns';
 import { AppData, DailySummary } from '@/types';
-import { getDailySummary, isDayOff, formatCurrency } from '@/lib/data-utils';
+import { getDailySummary, isDayOff } from '@/lib/data-utils';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 

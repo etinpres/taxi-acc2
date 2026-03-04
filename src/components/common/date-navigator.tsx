@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { formatDate, formatMonth, getPrevDay, getNextDay, getPrevMonth, getNextMonth, getToday, getCurrentMonth } from '@/lib/date-utils';
+import { formatDate, formatMonth, getPrevDay, getNextDay, getPrevMonth, getNextMonth, getCurrentMonth, getLastDayOfCurrentMonth } from '@/lib/date-utils';
 
 interface DateNavigatorProps {
   date: string;
@@ -11,7 +11,7 @@ interface DateNavigatorProps {
 
 export function DateNavigator({ date, onChange, mode }: DateNavigatorProps) {
   const label = mode === 'day' ? formatDate(date) : formatMonth(date);
-  const isToday = mode === 'day' ? date === getToday() : date === getCurrentMonth();
+  const isAtLimit = mode === 'day' ? date >= getLastDayOfCurrentMonth() : date === getCurrentMonth();
 
   const handlePrev = () => {
     onChange(mode === 'day' ? getPrevDay(date) : getPrevMonth(date));
@@ -29,7 +29,7 @@ export function DateNavigator({ date, onChange, mode }: DateNavigatorProps) {
       <span className="text-base font-semibold text-gray-900">{label}</span>
       <button
         onClick={handleNext}
-        disabled={isToday}
+        disabled={isAtLimit}
         className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
       >
         <ChevronRight size={20} />

@@ -7,7 +7,7 @@ import {
   Expense,
   ExpenseCategory,
 } from '@/types';
-import { getDaysInMonth, getCurrentMonth } from './date-utils';
+import { getDaysInMonth } from './date-utils';
 import { differenceInDays, parse, endOfMonth, startOfMonth, isAfter } from 'date-fns';
 
 export function filterIncomesByDate(incomes: Income[], date: string): Income[] {

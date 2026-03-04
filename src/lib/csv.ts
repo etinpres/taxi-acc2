@@ -40,11 +40,37 @@ export function exportToCsv(data: AppData): void {
     lines.push(d);
   }
 
-  const blob = new Blob([BOM + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const CSV_MIME = 'text/csv;charset=utf-8;';
+  const csvContent = BOM + lines.join('\n');
+  const filename = `고도비만택시장부-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+  const blob = new Blob([csvContent], { type: CSV_MIME });
+
+  const swallowAbort = (err: unknown) => {
+    if (err instanceof Error && err.name !== 'AbortError') console.error('[csv] share failed:', err);
+  };
+
+  // Capacitor WKWebView 감지: blob URL을 네이티브 공유에 넘기면 에러 발생
+  const isCapacitor = !!(window as unknown as { Capacitor?: unknown }).Capacitor;
+
+  if (navigator.share) {
+    if (isCapacitor) {
+      // Capacitor iOS: 텍스트로 공유 (공유 시트 → 파일에 저장 가능)
+      navigator.share({ title: filename, text: csvContent }).catch(swallowAbort);
+      return;
+    }
+    // 데스크톱 Safari 등: File 객체로 직접 공유
+    const file = new File([blob], filename, { type: CSV_MIME });
+    if (navigator.canShare?.({ files: [file] })) {
+      navigator.share({ files: [file], title: filename }).catch(swallowAbort);
+      return;
+    }
+  }
+
+  // 데스크톱 폴백
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `고도비만택시장부-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
 }
